@@ -675,6 +675,7 @@ ssize_t SurfaceComposerClient::getDisplayOrientation(int32_t displayId) {
 }
 #endif
 
+
 // TODO: Remove me.  Do not use.
 // This is a compatibility shim for one product whose drivers are depending on
 // this legacy function (when they shouldn't).
@@ -683,6 +684,8 @@ status_t SurfaceComposerClient::getDisplayInfo(
 {
     return getDisplayInfo(getBuiltInDisplay(displayId), info);
 }
+
+
 
 // ----------------------------------------------------------------------------
 
@@ -701,7 +704,11 @@ status_t ScreenshotClient::capture(
     if (s == NULL) return NO_INIT;
     return s->captureScreen(display, producer,
             reqWidth, reqHeight, minLayerZ, maxLayerZ,
+
             SS_CPU_CONSUMER);
+
+            false);
+
 }
 
 ScreenshotClient::ScreenshotClient()

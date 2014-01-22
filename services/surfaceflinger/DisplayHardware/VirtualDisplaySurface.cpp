@@ -447,11 +447,17 @@ status_t VirtualDisplaySurface::disconnect(int api) {
     return mSource[SOURCE_SINK]->disconnect(api);
 }
 
+
 #ifdef QCOM_HARDWARE
 status_t VirtualDisplaySurface::setBuffersSize(int size) {
    return mSource[SOURCE_SINK]->setBuffersSize(size);
 }
 #endif
+
+status_t VirtualDisplaySurface::setBuffersSize(int size) {
+   return mSource[SOURCE_SINK]->setBuffersSize(size);
+}
+
 
 void VirtualDisplaySurface::updateQueueBufferOutput(
         const QueueBufferOutput& qbo) {

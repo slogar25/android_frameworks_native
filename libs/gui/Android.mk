@@ -39,6 +39,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libutils \
 	liblog
 
+
 ifeq ($(call is-board-platform-in-list, mpq8092), true)
     LOCAL_CFLAGS            += -DVFM_AVAILABLE
 endif
@@ -55,6 +56,11 @@ endif
     LOCAL_C_INCLUDES        += $(TARGET_OUT_HEADERS)/vpu/
     LOCAL_CFLAGS            += -DQCOM_BSP
     LOCAL_SHARED_LIBRARIES  += libqdMetaData
+
+# Executed only on QCOM BSPs
+ifeq ($(TARGET_USES_QCOM_BSP),true)
+    LOCAL_CFLAGS += -DQCOM_BSP
+
 endif
 
 LOCAL_MODULE:= libgui

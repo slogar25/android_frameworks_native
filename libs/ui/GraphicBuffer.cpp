@@ -76,6 +76,20 @@ GraphicBuffer::GraphicBuffer(uint32_t w, uint32_t h,
 #endif
 
 GraphicBuffer::GraphicBuffer(uint32_t w, uint32_t h,
+        PixelFormat reqFormat, uint32_t reqUsage, uint32_t bufferSize)
+    : BASE(), mOwner(ownData), mBufferMapper(GraphicBufferMapper::get()),
+      mInitCheck(NO_ERROR)
+{
+    width  =
+    height =
+    stride =
+    format =
+    usage  = 0;
+    handle = NULL;
+    mInitCheck = initSize(w, h, reqFormat, reqUsage, bufferSize);
+}
+
+GraphicBuffer::GraphicBuffer(uint32_t w, uint32_t h,
         PixelFormat inFormat, uint32_t inUsage,
         uint32_t inStride, native_handle_t* inHandle, bool keepOwnership)
     : BASE(), mOwner(keepOwnership ? ownHandle : ownNone),
@@ -169,7 +183,10 @@ status_t GraphicBuffer::initSize(uint32_t w, uint32_t h, PixelFormat format,
     return err;
 }
 
+
 #ifdef QCOM_HARDWARE
+
+
 status_t GraphicBuffer::initSize(uint32_t w, uint32_t h, PixelFormat format,
                                  uint32_t reqUsage, uint32_t bufferSize)
 {
@@ -184,7 +201,10 @@ status_t GraphicBuffer::initSize(uint32_t w, uint32_t h, PixelFormat format,
     }
     return err;
 }
+
 #endif
+
+
 
 status_t GraphicBuffer::lock(uint32_t usage, void** vaddr)
 {

@@ -437,10 +437,35 @@ status_t SurfaceFlinger::selectEGLConfig(EGLDisplay display, EGLint nativeVisual
     err = selectConfigForAttribute(display, attribs, wantedAttribute,
         wantedAttributeValue, config);
     if (err == NO_ERROR) {
-        EGLint caveat;
-        if (eglGetConfigAttrib(display, *config, EGL_CONFIG_CAVEAT, &caveat))
-            ALOGW_IF(caveat == EGL_SLOW_CONFIG, "EGL_SLOW_CONFIG selected!");
+        goto success;
     }
+
+    // Try again without EGL_FRAMEBUFFER_TARGET_ANDROID
+    ALOGW("no suitable EGLConfig found, trying without EGL_FRAMEBUFFER_TARGET_ANDROID");
+    attribs.remove(EGL_FRAMEBUFFER_TARGET_ANDROID);
+    err = selectConfigForAttribute(display, attribs, wantedAttribute, wantedAttributeValue, config);
+    if (err == NO_ERROR) {
+        goto success;
+    }
+
+    // Try again without EGL_RECORDABLE_ANDROID
+    ALOGW("no suitable EGLConfig found, trying without EGL_RECORDABLE_ANDROID");
+    attribs.remove(EGL_RECORDABLE_ANDROID);
+    err = selectConfigForAttribute(display, attribs, wantedAttribute, wantedAttributeValue, config);
+    if (err == NO_ERROR) {
+        goto success;
+    }
+
+    // Failed to find a config
+    goto out;
+
+success:
+    EGLint caveat;
+    if (eglGetConfigAttrib(display, *config, EGL_CONFIG_CAVEAT, &caveat)) {
+        ALOGW_IF(caveat == EGL_SLOW_CONFIG, "EGL_SLOW_CONFIG selected!");
+    }
+
+out:
     return err;
 }
 
@@ -3225,8 +3250,10 @@ status_t SurfaceFlinger::captureScreenImplLocked(
 
     status_t result = NO_ERROR;
     if (native_window_api_connect(window, NATIVE_WINDOW_API_EGL) == NO_ERROR) {
-        uint32_t usage = GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN |
-                        GRALLOC_USAGE_HW_RENDER | GRALLOC_USAGE_HW_TEXTURE;
+        uint32_t usage = GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN;
+        if (!useReadPixels) {
+            usage |= GRALLOC_USAGE_HW_RENDER | GRALLOC_USAGE_HW_TEXTURE;
+        }
 
         int err = 0;
         err = native_window_set_buffers_dimensions(window, reqWidth, reqHeight);

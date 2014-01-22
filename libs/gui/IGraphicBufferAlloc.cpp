@@ -32,9 +32,13 @@ namespace android {
 
 enum {
     CREATE_GRAPHIC_BUFFER = IBinder::FIRST_CALL_TRANSACTION,
+
 #ifdef QCOM_HARDWARE
     SET_GRAPHIC_BUFFER_SIZE,
 #endif
+
+    SET_GRAPHIC_BUFFER_SIZE,
+
 };
 
 class BpGraphicBufferAlloc : public BpInterface<IGraphicBufferAlloc>
@@ -67,7 +71,10 @@ public:
         return graphicBuffer;
     }
 
+
 #ifdef QCOM_HARDWARE
+
+
     virtual void setGraphicBufferSize(int size) {
         Parcel data, reply;
         data.writeInterfaceToken(
@@ -75,7 +82,10 @@ public:
         data.writeInt32(size);
         remote()->transact(SET_GRAPHIC_BUFFER_SIZE, data, &reply);
     }
+
 #endif
+
+
 };
 
 IMPLEMENT_META_INTERFACE(GraphicBufferAlloc, "android.ui.IGraphicBufferAlloc");
@@ -121,14 +131,20 @@ status_t BnGraphicBufferAlloc::onTransact(
             }
             return NO_ERROR;
         } break;
+
 #ifdef QCOM_HARDWARE
+
+
         case SET_GRAPHIC_BUFFER_SIZE: {
             CHECK_INTERFACE(IGraphicBufferAlloc, data, reply);
             int size = data.readInt32();
             setGraphicBufferSize(size);
             return NO_ERROR;
         } break;
+
 #endif
+
+
         default:
             return BBinder::onTransact(code, data, reply, flags);
     }
