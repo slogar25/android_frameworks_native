@@ -37,13 +37,7 @@ enum {
     QUEUE_BUFFER,
     CANCEL_BUFFER,
     QUERY,
-
-#ifdef QCOM_HARDWARE
     SET_BUFFERS_SIZE,
-#endif
-
-    SET_BUFFERS_SIZE,
-
     CONNECT,
     DISCONNECT,
 };
@@ -187,10 +181,6 @@ public:
         return result;
     }
 
-
-#ifdef QCOM_HARDWARE
-
-
     virtual status_t setBuffersSize(int size) {
         Parcel data, reply;
         data.writeInterfaceToken(IGraphicBufferProducer::getInterfaceDescriptor());
@@ -202,10 +192,6 @@ public:
         result = reply.readInt32();
         return result;
     }
-
-#endif
-
-
 
 };
 
@@ -282,10 +268,6 @@ status_t BnGraphicBufferProducer::onTransact(
             reply->writeInt32(res);
             return NO_ERROR;
         } break;
-
-#ifdef QCOM_HARDWARE
-
-
         case SET_BUFFERS_SIZE: {
             CHECK_INTERFACE(IGraphicBufferProducer, data, reply);
             int size = data.readInt32();
@@ -293,10 +275,6 @@ status_t BnGraphicBufferProducer::onTransact(
             reply->writeInt32(res);
             return NO_ERROR;
         } break;
-
-#endif
-
-
         case CONNECT: {
             CHECK_INTERFACE(IGraphicBufferProducer, data, reply);
             sp<IBinder> token = data.readStrongBinder();
