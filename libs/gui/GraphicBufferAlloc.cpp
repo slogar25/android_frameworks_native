@@ -54,10 +54,6 @@ void GraphicBufferAlloc::setGraphicBufferSize(int size) {
     mBufferSize = size;
 }
 
-void GraphicBufferAlloc::setGraphicBufferSize(int size) {
-    mBufferSize = size;
-}
-
 // ----------------------------------------------------------------------------
 }; // namespace android
 // ----------------------------------------------------------------------------
